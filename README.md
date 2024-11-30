@@ -8,6 +8,8 @@ _Proyecto de Titulación / Maestría en Ciencia de Datos USFQ_
 
 En el presente trabajo se implementan redes neuronales informadas por física (PINNs) para la resolución de ecuaciones diferenciales obtenidas de la aplicación del método de conjuntos de nivel en problemas de evolución de interfaces. Estos problemas son la rotación del círculo, rectángulo y disco de Zalesak a través de un punto en el plano y la deformación de un círculo en un vórtice. Se realizan comparaciones con distintas configuraciones de los parámetros de las PINNs variando la cantidad de capas, neuronas, función de activación de cada neurona, puntos de colocación y número de iteraciones de entrenamiento. Para estas comparaciones se utilizan las métricas $L_1$, IoU y porcentaje de pérdida de área. Se concluyó que para estos problemas, la resolución mediante PINNs con redes neuronales completamente conectadas de 5 capas y 200 neuronas, donde se utilizan 10000 puntos de colocación, generalmente obtienen métricas robustas después de 500000 iteraciones de entrenamiento; además, la función de activación sigmoide tiene un comportamiento más estable que la función tangente hiperbólica. Esta configuración puede servir como punto de partida para investigaciones futuras sobre problemas del método de conjuntos de nivel.
 
+### Ecuaciones Diferenciales
+
 La ecuación del conjunto de nivel que se resuelve con PINNs es:
 
 $$
@@ -31,6 +33,34 @@ $$
     \frac{\partial\phi}{\partial t} = - 8 sin^2(\pi x) sin(2\pi y) cos(\pi t)\frac{\partial \phi}{\partial x} + 8sin(2\pi x) sin^2(\pi y) cos(\pi t)\frac{\partial \phi}{\partial y}
 \end{equation}
 $$
+
+### Experimentos
+
+En este proyecto, se implementaron PINNs para resolver los siguientes problemas:
+
+- Rotación del círculo
+- Rotación del rectángulo
+- Rotación del disco de Zalesak
+- Deformación del círculo en un vórtice
+
+Para cada uno de los problemas, se consideraron las siguientes configuraciones de la PINN completamente conectada:
+
+- 3 capas con 100 neuronas cada una
+- 5 capas con 200 neuronas cada una
+
+Además, para las neuronas de cada configuración anterior, se consideraron las siguientes funciones de activación:
+
+- Sigmoide
+- Tangente Hiperbólica
+
+Los puntos de colocación de las PINNs fueron seleccionados de forma aleatoria en cada iteración del algoritmo. La cantidad de puntos de colocación por cada configuración de la PINN fue: 
+
+- $80 \times 80 = 6400$ puntos de colocación
+- $100 \times 100 = 10000$ puntos de colocación
+
+Finalmente, todos los casos se entrenaron con 2000000 de iteraciones y se tabularon los resultados cada 50000 iteraciones.
+
+### Resultados: Mejores Modelos
 
 - **Rotación del Círculo:** El mejor modelo para este problema, que obtuvo el mayor valor de IoU y menor valor de $L_1$ fue el de 5 capas con 200 neuronas cada una, con función de activación sigmoide utilizando $100\times100=10000$ puntos de colocación y con 1700000 iteraciones de entrenamiento. El tiempo de ejecución del entrenamiento fue 4 horas y 31 minutos.
 <p align="center">
@@ -57,16 +87,16 @@ $$
 El repositorio consta de:
 
 -	Carpeta de cada problema (circulo, rectangulo, zalesak y vortex )
--	graficos.py: Contiene las funciones para graficar los resultados.
+-	graficos.py: Contiene funciones a las que se hace referencia en otros scripts para graficar los resultados.
 -	resultados.ipynb: Cuaderno de Jupyter con la ejecución de los gráficos de los resultados de las métricas $L_1$, IoU y porcentaje de pérdida de área a través de las iteraciones.
 -	resultados_evolucion_comparacion_area.ipynb: Cuaderno de Jupyter con la ejecución de los gráficos de los resultados sobre evolución de la interfaz, comparación de interfaces teóricas y predichas y evolución del porcentaje de pérdida de área en el tiempo, para los mejores modelos de cada problema.
 
 Dentro de cada carpeta (circulo, rectangulo, zalesak y vortex) se encuentra:
 
 -	8 carpetas para cada configuración de la PINN. En cada carpeta se encuentra un archivo .py para la ejecución de los resultados, un archivo .csv con los resultados de las métricas, un archivo .txt con los tiempos de entrenamiento en segundos cada 50000 iteraciones, una carpeta con el .gif de la evolución de la interfaz en la iteración 2000000 y en aquella que corresponda al mejor modelo y una carpeta con todos los modelos entrenados.
--	8 archivos .py con el código para el entrenamiento de la PINN
+-	8 archivos .py con el código para el entrenamiento de cada configuración de la PINN
 
-**Nota:** Cada carpeta tiene el mismo nombre que el archivo .py del entrenamiento del modelo.
+**Nota:** Cada carpeta de configuración de PINN tiene el mismo nombre que el archivo .py del entrenamiento del modelo.
 
 ## Instrucciones de Ejecución
 
@@ -78,7 +108,7 @@ Para entrenar una PINN para el problema de la rotación del círculo con 100x100
 r_circulo_100x100_5c_200n_sigmoid.py
 </p>
 
-La ejecución del script crea una carpeta de nombre “r_circulo_100x100_5c_200n_sigmoid” en el mismo directorio. Además, dentro de esta carpeta se generan los archivos tiempo_entrenamiento.txt y una carpeta llamada “modelos” con los modelos de PyTorch cada 50000 iteraciones, que serán utilizados para inferir los resultados. Un ejemplo es es “r_circulo_100x100_5c_200n_sigmoid_450000it.pth”, el cual representa el modelo entrenado con 450000 iteraciones.
+La ejecución del script crea una carpeta de nombre “r_circulo_100x100_5c_200n_sigmoid” en el mismo directorio. Además, dentro de esta carpeta se generan los archivos tiempo_entrenamiento.txt y una carpeta llamada “modelos” con los modelos de PyTorch cada 50000 iteraciones, que serán utilizados para inferir los resultados. Un ejemplo es “r_circulo_100x100_5c_200n_sigmoid_450000it.pth”, el cual representa el modelo entrenado con 450000 iteraciones.
 
 Luego, dentro de la carpeta “r_circulo_100x100_5c_200n_sigmoid” se ejecuta el archivo:
 
